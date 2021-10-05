@@ -3,21 +3,13 @@ ggplot 1
 
 ``` r
 library(tidyverse)
-```
-
-    ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
-
-    ## ✓ ggplot2 3.3.5     ✓ purrr   0.3.4
-    ## ✓ tibble  3.1.4     ✓ dplyr   1.0.7
-    ## ✓ tidyr   1.1.3     ✓ stringr 1.4.0
-    ## ✓ readr   2.0.1     ✓ forcats 0.5.1
-
-    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-    ## x dplyr::filter() masks stats::filter()
-    ## x dplyr::lag()    masks stats::lag()
-
-``` r
 library(ggridges)
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
 ```
 
 Loading Dataset that we will use often:
@@ -70,9 +62,7 @@ weather_df %>%
   geom_point()
 ```
 
-    ## Warning: Removed 15 rows containing missing values (geom_point).
-
-![](viz_part1_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+<img src="viz_part1_files/figure-gfm/unnamed-chunk-3-1.png" width="90%" />
 
 You can save ggplots as well:
 
@@ -95,8 +85,107 @@ weather_df %>%
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-    ## Warning: Removed 15 rows containing non-finite values (stat_smooth).
+<img src="viz_part1_files/figure-gfm/unnamed-chunk-5-1.png" width="90%" />
 
-    ## Warning: Removed 15 rows containing missing values (geom_point).
+One more scatterplot:
 
-![](viz_part1_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+``` r
+weather_df %>%
+  ggplot(aes(x = date, y = tmax, size = prcp)) +
+  geom_point(alpha = .3) +
+  facet_grid(. ~ name) +
+  geom_smooth(se = FALSE)
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+
+<img src="viz_part1_files/figure-gfm/unnamed-chunk-6-1.png" width="90%" />
+
+## Use data manipulation as part of this
+
+``` r
+weather_df %>%
+  filter(name == "CentralPark_NY") %>%
+  mutate(
+    tmax = tmax * (9/5) + 32,
+    tmin = tmin * (9/5) + 32
+  ) %>%
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point() 
+```
+
+<img src="viz_part1_files/figure-gfm/unnamed-chunk-7-1.png" width="90%" />
+
+# Stacking geoms
+
+``` r
+weather_df %>%
+  ggplot(aes(x = date, y = tmax, color = name)) +
+  geom_smooth()
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+
+<img src="viz_part1_files/figure-gfm/unnamed-chunk-8-1.png" width="90%" />
+
+## Fancy hexagon scatterplots
+
+``` r
+ggplot(weather_df, aes(x = tmax, y = tmin)) + geom_hex()
+```
+
+<img src="viz_part1_files/figure-gfm/unnamed-chunk-9-1.png" width="90%" />
+
+# Histograms
+
+``` r
+weather_df %>%
+  ggplot(aes(x = tmax, fill = name)) + 
+  geom_histogram()
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+<img src="viz_part1_files/figure-gfm/unnamed-chunk-10-1.png" width="90%" />
+
+# Boxplots
+
+``` r
+weather_df %>%
+  ggplot(aes(x = tmax, fill = name)) + 
+  geom_boxplot()
+```
+
+<img src="viz_part1_files/figure-gfm/unnamed-chunk-11-1.png" width="90%" />
+
+# Violin Plots
+
+``` r
+weather_df %>%
+  ggplot(aes(x = name, y = tmax, fill = name)) + 
+  geom_violin()
+```
+
+<img src="viz_part1_files/figure-gfm/unnamed-chunk-12-1.png" width="90%" />
+
+# Density Plots
+
+``` r
+weather_df %>%
+  ggplot(aes(x = tmax, y = name)) + 
+  geom_density_ridges(alpha = 0.8, scale = 0.8)
+```
+
+    ## Picking joint bandwidth of 1.84
+
+<img src="viz_part1_files/figure-gfm/unnamed-chunk-13-1.png" width="90%" />
+
+## Embedded plots
+
+``` r
+weather_df %>%
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = 0.3)
+```
+
+<img src="viz_part1_files/figure-gfm/unnamed-chunk-14-1.png" width="90%" />

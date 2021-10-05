@@ -3,15 +3,21 @@ title: "ggplot 1"
 output: github_document
 ---
 
-```{r}
+```{r, warning = FALSE, message = FALSE}
 library(tidyverse)
 library(ggridges)
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
 ```
 
 
 Loading Dataset that we will use often:
 
-```{r, echo = FALSE, message = FALSE}
+```{r, warning = FALSE}
 weather_df = 
   rnoaa::meteo_pull_monitors(
     c("USW00094728", "USC00519397", "USS0023B17S"),
@@ -32,7 +38,7 @@ weather_df =
 
 ## Scatterplots
 
-```{r, echo = FALSE, message = FALSE}
+```{r, warning = FALSE}
 weather_df %>%
   ggplot(aes(x = tmin, y = tmax)) +
   geom_point()
@@ -41,7 +47,7 @@ weather_df %>%
 
 You can save ggplots as well:
 
-```{r, message = FALSE}
+```{r, warning = FALSE}
 ggp_tmax_tmin =
   weather_df %>%
   ggplot(aes(x = tmin, y = tmax)) +
@@ -51,7 +57,7 @@ ggp_tmax_tmin =
 
 ## Let's fancy it up!
 
-```{r}
+```{r, warning = FALSE}
 weather_df %>%
   ggplot(aes(x = tmin, y = tmax, color = name)) +
   geom_point(alpha = 0.3) +
@@ -61,7 +67,7 @@ weather_df %>%
 
 One more scatterplot:
 
-```{r}
+```{r,warning = FALSE}
 weather_df %>%
   ggplot(aes(x = date, y = tmax, size = prcp)) +
   geom_point(alpha = .3) +
@@ -70,6 +76,75 @@ weather_df %>%
 ```
 
 
+## Use data manipulation as part of this
+
+```{r, warning = FALSE}
+weather_df %>%
+  filter(name == "CentralPark_NY") %>%
+  mutate(
+    tmax = tmax * (9/5) + 32,
+    tmin = tmin * (9/5) + 32
+  ) %>%
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point() 
+```
+
+
+# Stacking geoms
+
+```{r, warning = FALSE}
+weather_df %>%
+  ggplot(aes(x = date, y = tmax, color = name)) +
+  geom_smooth()
+```
+
+## Fancy hexagon scatterplots
+
+```{r, warning = FALSE}
+ggplot(weather_df, aes(x = tmax, y = tmin)) + geom_hex()
+```
+
+# Histograms
+
+```{r, warning = FALSE}
+weather_df %>%
+  ggplot(aes(x = tmax, fill = name)) + 
+  geom_histogram()
+
+```
+
+# Boxplots
+
+```{r, warning = FALSE}
+weather_df %>%
+  ggplot(aes(x = tmax, fill = name)) + 
+  geom_boxplot()
+```
+
+# Violin Plots
+
+```{r, warning = FALSE}
+weather_df %>%
+  ggplot(aes(x = name, y = tmax, fill = name)) + 
+  geom_violin()
+```
+
+# Density Plots
+
+```{r, warning = FALSE}
+weather_df %>%
+  ggplot(aes(x = tmax, y = name)) + 
+  geom_density_ridges(alpha = 0.8, scale = 0.8)
+```
+
+## Embedded plots
+
+```{r, warning = FALSE, fig.width = 12}
+weather_df %>%
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = 0.3)
+```
+
 
 
 ```{r}
@@ -78,9 +153,12 @@ weather_df %>%
 
 
 
-
 ```{r}
 
 ```
 
 
+
+```{r}
+
+```
