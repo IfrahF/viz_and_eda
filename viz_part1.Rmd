@@ -11,7 +11,7 @@ library(ggridges)
 
 Loading Dataset that we will use often:
 
-```{r}
+```{r, echo = FALSE, message = FALSE}
 weather_df = 
   rnoaa::meteo_pull_monitors(
     c("USW00094728", "USC00519397", "USS0023B17S"),
@@ -27,6 +27,60 @@ weather_df =
     tmin = tmin / 10,
     tmax = tmax / 10) %>%
   select(name, id, everything())
+```
+
+
+## Scatterplots
+
+```{r, echo = FALSE, message = FALSE}
+weather_df %>%
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point()
+  
+```
+
+You can save ggplots as well:
+
+```{r, message = FALSE}
+ggp_tmax_tmin =
+  weather_df %>%
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point()
+```
+
+
+## Let's fancy it up!
+
+```{r}
+weather_df %>%
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(se = FALSE) +
+  facet_grid(. ~ name)
+```
+
+One more scatterplot:
+
+```{r}
+weather_df %>%
+  ggplot(aes(x = date, y = tmax, size = prcp)) +
+  geom_point(alpha = .3) +
+  facet_grid(. ~ name) +
+  geom_smooth(se = FALSE)
+```
+
+
+
+
+```{r}
+
+```
+
+
+
+
+```{r}
+
 ```
 
 
